@@ -1,4 +1,4 @@
-const products = [
+[
   {
     "colors": ["Blue", "White", "Black"],
     "_id": "107fb5b75607497b96722bda5b504926",
@@ -71,19 +71,8 @@ const products = [
     "description": "Mauris molestie laoreet finibus. Aenean scelerisque convallis lacus at dapibus. Morbi imperdiet enim metus rhoncus.",
     "altTxt": "Photo of a pink sofa, three seats"
   }
-];
+]
 
-exports.find = () => {
-  return new Promise((resolve, reject) => resolve(JSON.parse(JSON.stringify(products))));
-}
-
-exports.findById = (id) => {
-  return new Promise((resolve, reject) =>
-    resolve(JSON.parse(JSON.stringify(products)).find(product =>
-      product._id == id)
-    )
-  );
-}
 
 
 
