@@ -6,7 +6,7 @@ try {
         const parsedData = await response.json();
         console.log('parsedData', parsedData)
 
-        //Show every products from ./back/models in Home page 
+        //For every object create a HTML <a> with dynamically data
         parsedData.map(el => {
             const product = document.createElement('a')
             product.innerHTML = `<a href='./product.html?id=${el._id}'>
@@ -20,7 +20,7 @@ try {
 
             // Add event listener to each product
             product.addEventListener('click', function () {
-                // Store the product details in local storage
+                // Store the product details in local storage and convert to js
                 localStorage.setItem('selectedProduct', JSON.stringify(el));
             });
         });
@@ -31,35 +31,3 @@ try {
     console.error(`Importing products Error Status: ${response.status} `);
 };
 
-// //function to export the data created by every
-// window.onload = function () {
-//     // Redirect to the different page
-//     window.location.href = './differentPage.html';
-// };
-
-
-
-// const articleElement = document.querySelector('a');
-
-// articleElement.addEventListener('click', ($event) {
-//     // Get the value entered by the user
-//     let clickedArticle = $event.target.closest('article');
-//     let articleId = clickedArticle.getAttribute('id');
-//     let productArticle = articleId.value;
-
-//     // Store the value in localStorage
-//     localStorage.setItem('productArticle', productArticle);
-
-// });
-
-// window.document.querySelectorAll('${el._id}').forEach(function (el) {
-//     el.addEventListener('click', ($event) => {
-//         let clickedEvent = $event.target.getAttribute('data-info');
-
-//         let storedData = localStorage.setItem('clickedEvent', clickedEvent);
-//         let dataArray = storedData ? JSON.parse(storedData) : [];
-//         dataArray.push(data);
-//         localStorage.setItem('clickedEvent', JSON.stringify(dataArray));
-
-//                         // Store clickedData in local storage
-//                         // localStorage.setItem('clickedEvent', clickedEvent);
