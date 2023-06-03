@@ -22,59 +22,88 @@ document.getElementById('colors').innerHTML = selectedProduct.colors.map((item) 
 //Add dynamically price
 document.getElementById('price').textContent = selectedProduct.price;
 
-//Get reference to my elements
+// Create the cart
+let addToCart = [];
+
 const addToCartButton = document.getElementById('addToCart');
 
-// Add event listener to "add to cart" button
+// Add event listener to "add to cart" button and save the product details in local store
 addToCartButton.addEventListener('click', () => {
-    //Get reference to my elements
-    const color = document.getElementById('colors').value;
-    const quantity = document.getElementById('quantity').value;
-    const image = document.getElementById('item_img').value;
-    // Get the product title and price 
-    const productName = document.getElementById('title').innerText;
-    const productPrice = document.getElementById('price').innerText;
 
-    // Check if the cart already contains the same product with the same color
-    const existingCartItem = getCartItem(productName, color);
+    const id = selectedProduct._id;
+
+    // const id = selectedProduct._id;
+    // console.log(document.getElementById('quantity').value);
+    
+    // Search if the product is already into the cart
+    let search = addToCart.find((el) => el.id === selectedProduct._id );
+
+    if (search === undefined) {
+        // Push into the cart the product with the current data selection if the product is not in the cart
+        addToCart.push({
+            id: selectedProduct._id,
+            color: document.getElementById('colors').value,
+            quantity: parseInt(document.getElementById('quantity').value),
+            imageUrl: selectedProduct.imageUrl,
+            name: document.getElementById('title').innerText,
+            price: document.getElementById('price').innerText
+        });
+        // if the product is in the cart and have the same color like the new one just increase the quantity
+    } else if (search.color === document.getElementById('colors').value){
+        search.quantity += parseInt(document.getElementById('quantity').value);
+        // if the product is in the cart but have a different color, create a new product
+    } else {
+        // Push into the cart the product with the current data selection
+        addToCart.push({
+            id: selectedProduct._id,
+            color: document.getElementById('colors').value,
+            quantity: parseInt(document.getElementById('quantity').value),
+            imageUrl: selectedProduct.imageUrl,
+            name: document.getElementById('title').innerText,
+            price: document.getElementById('price').innerText
+        });
+    }
+
+    console.log(addToCart);
+    // Function to save the cart items to local storage
+    localStorage.setItem(addToCart[0].id, JSON.stringify(addToCart));
+
+    // // // Redirect to the cart page
+    // document.location.href = 'cart.html';
 
 });
 
+// console.log(addToCartButton);
 
-// // Store the to add to cart product details in local storage and convert to js
-// localStorage.setItem('addToCartselectedProduct', JSON.stringify());
-// if (existingCartItem) {
 
-//     // If the product exists, update the quantity
-//     existingCartItem.quantity += quantity;
-// } else {
-//     // If the item doesn't exist, create a new cart item
-//     const cartItem = {
-//         productName,
-//         color,
-//         price: productPrice,
-//         quantity
-//     };
+// //Get reference to my elements
+// const addToCartButton = document.getElementById('addToCart');
 
-//     // Add the new product to the cart
-//     const cartItems = getCartItems();
-//     cartItems.push(cartItem);
-//     saveCartItems(cartItems);
-
-//     //Redirect to the cart page
-//     document.location.href = 'http://127.0.0.1:5500/front/html/cart.html';
+// // Add event listener to "add to cart" button and save the product details in local store
+// addToCartButton.addEventListener('click', () => {
+//     //Get reference to my elements
+//     const color = document.getElementById('colors').value;
+//     const quantity = document.getElementById('quantity').value;
+//     const image = document.getElementById('item_img').value;
+//     // Get the product title and price
+//     const productName = document.getElementById('title').innerText;
+//     const productPrice = document.getElementById('price').innerText;
 
 //     // Function to save the cart items to local storage
-//     function saveCartItems(cartItems) {
-//         localStorage.setItem('cartItems', JSON.stringify(cartItems));
-//     }
+//     localStorage.setItem(productName, JSON.stringify(addToCartButton));
 
-//     // Function to get a specific cart item by product name and color
-//     function getCartItem(productName, color) {
-//         const cartItems = getCartItems();
-//         return cartItems.find(item => item.productName === productName && item.color === color);
-//     }
+//     // Redirect to the cart page
+//     document.location.href = 'http://127.0.0.1:5500/front/html/cart.html';
 
-//     console.log(saveCartItems);
-//     console.log(getCartItem);
-// }
+// });
+
+
+ // //Get reference to my elements
+    // const id = selectedProduct._id;
+    // const color = document.getElementById('colors').value;
+    // const quantity = document.getElementById('quantity').value;
+    // const imageUrl = selectedProduct.imageUrl;
+
+    // // Get the product title and price 
+    // const productName = document.getElementById('title').innerText;
+    // const productPrice = document.getElementById('price').innerText;
