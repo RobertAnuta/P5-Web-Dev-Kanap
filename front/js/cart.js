@@ -1,16 +1,49 @@
+// Import local storage products
 let storedCartProduct = localStorage.getItem('addToCart');
 
 // Parse the stored product details as an object
 let selectedCartProduct = JSON.parse(storedCartProduct);
-// }
+
+// console.log(selectedCartProduct);
+
+// let cart = JSON.parse(localStorage.getItem('addToCart')) || [];
+
+//For every object create a HTML <a> with dynamically data
+selectedCartProduct.map(el => {
+    // const products = document.createElement('a');
+    const product = document.createElement('article')
+
+    // console.log(search.key);
+    // Add class name to the product HTML element article
+    product.classList.add("cart__item");
+
+    // Set product data-id 
+    product.setAttribute("data-id", `${el.key}`);
+    // Set product data-color
+    product.setAttribute("data-color", `${el.color}`);
+
+    // For every product insert HTML element with variable data based on local store data
+    product.innerHTML = `<div class="cart__item__img">
+                <img src="../../back/images/${el.imageUrl}" alt="Photo of ${el.name}">
+              </div>
+              <div class="cart__item__content">
+                <div class="cart__item__content__description">
+                  <h2>${el.name}</h2>
+                  <p>${el.color}</p>
+                  <p>€ ${el.price}</p>
+                </div>
+                <div class="cart__item__content__settings">
+                  <div class="cart__item__content__settings__quantity">
+                    <p>Quantity : </p>
+                    <input type="number" class="itemQuantity" name="itemQuantity" min="1" max="100" value="${el.quantity}">
+                  </div>
+            <div class="cart__item__content__settings__delete">
+              <p class="deleteItem">Delete</p>
+            </div>
+      </div>
+    </div>`
+    document.getElementById('cart__items').appendChild(product);
+
+});
 
 
-
-// let updateProductQuantity = (id) => {
-//     let search = addToCart.find((el) => el.id === id);
-//     console.log(search.id);
-//      document.getElementById(id).innerHTML =
-
-
-
-// console.log(addToCartButton);

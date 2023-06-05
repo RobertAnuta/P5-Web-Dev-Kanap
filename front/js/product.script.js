@@ -23,7 +23,7 @@ document.getElementById('colors').innerHTML = selectedProduct.colors.map((item) 
 document.getElementById('price').textContent = selectedProduct.price;
 
 // Create the cart, and add all stored objects from localStorage in the cart
-let addToCart = JSON.parse(localStorage.getItem('addToCart')) || ["addToCart"];
+let addToCart = JSON.parse(localStorage.getItem('addToCart')) || [];
 
 const addToCartButton = document.getElementById("addToCart");
 
