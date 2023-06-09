@@ -35,7 +35,7 @@ selectedCartProduct.map(el => {
                 <div class="cart__item__content__settings">
                   <div class="cart__item__content__settings__quantity">
                     <p>Quantity : </p>
-                    <input type="number" class="itemQuantity" name="itemQuantity" min="1" max="100" value="${el.quantity}">
+                    <input type="number" id="itemQuantity" class="itemQuantity" name="itemQuantity" min="1" max="100" value="${el.quantity}">
                   </div>
             <div class="cart__item__content__settings__delete">
               <p class="deleteItem">Delete</p>
@@ -46,4 +46,24 @@ selectedCartProduct.map(el => {
 
 });
 
+// A calculator for the total quantity of the items from my cart
+let quantityCalculator = () => {
+    let totalQuantity = document.getElementById("totalQuantity");
+    // console.log(selectedCartProduct.map((el) => el.quantity).reduce((x, y) => x + y, 0));
+    totalQuantity.innerHTML = selectedCartProduct.map((el) => el.quantity).reduce((x, y) => x + y, 0);
 
+};
+quantityCalculator();
+
+
+
+// For each loop that will make a Total price for every product indicidualy then sum them together
+for (const el of selectedCartProduct) {
+    // for each el calculate the individual price
+    const totalPriceCalculator = selectedCartProduct.reduce((totalPrice, el) => {
+        const subTotal = el.quantity * el.price;
+        return totalPrice + subTotal;
+    }, 0);
+
+    console.log(totalPriceCalculator);
+};
