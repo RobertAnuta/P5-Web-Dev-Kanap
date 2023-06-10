@@ -23,12 +23,18 @@ document.getElementById('colors').innerHTML = selectedProduct.colors.map((item) 
 document.getElementById('price').textContent = selectedProduct.price;
 
 // Create the cart, and add all stored objects from localStorage in the cart
-let addToCart = JSON.parse(localStorage.getItem('addToCart')) || [];
+// let addToCart = JSON.parse(localStorage.getItem('addToCart')) || [];
+
 
 const addToCartButton = document.getElementById("addToCart");
 
 // Get the items selection and add it to the cart
 function handleAddToCart() {
+
+    let tmp = JSON.parse(localStorage.getItem('addToCart'));
+
+    let addToCart = tmp == {} ? [] : tmp || [];
+
     //Get reference to my elements
     const productId = selectedProduct._id;
     const productColor = document.getElementById('colors').value;
@@ -39,7 +45,7 @@ function handleAddToCart() {
     const productKey = `${productId}-${productColor}`;
 
     // Find all the objects from the cart that have the same key
-    const existingProduct = addToCart.find((el) => el.key === productKey);
+    let existingProduct = addToCart.find((el) => el.key === productKey);
 
     // console.log(existingProduct);
 
