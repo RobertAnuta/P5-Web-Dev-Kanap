@@ -41,7 +41,7 @@ selectedCartProduct.map(el => {
                     <input type="number" id="itemQuantity" class="itemQuantity" name="itemQuantity" min="1" max="100" value="${el.quantity}">
                   </div>
             <div class="cart__item__content__settings__delete">
-              <p class="deleteItem">Delete</p>
+              <p id="deleteItem" class="deleteItem" type="submit">Delete</p>
             </div>
       </div>
     </div>`
@@ -75,7 +75,12 @@ document.addEventListener("input", (event) => {
 
   localStorage.setItem("addToCart", JSON.stringify(readCartLs));
 
+  autoUpdatePage();
+});
 
+
+let autoUpdatePage = () => {
+  let readCartLs = JSON.parse(localStorage.getItem("addToCart"));
 
   const individualQuantity = readCartLs.reduce((x, y) => {
     const cartQuantity = (Number(x.quantity) + Number(y.quantity));
@@ -106,8 +111,19 @@ document.addEventListener("input", (event) => {
 
   priceInput.innerHTML = formatTotalPrice;
 
-});
+};
 
+autoUpdatePage();
+
+const deleteItem = document.getElementById("deleteItem");
+
+
+
+deleteItem.addEventListener("click", (event) => {
+  let readCartLs = JSON.parse(localStorage.getItem("addToCart"));
+  let item = readCartLs.find((el) => el.key === event.target.parentNode.parentNode.parentNode.parentNode.getAttribute("data-id"));
+  console.log(item);
+});
 
 
 // let updateCart = () => {
