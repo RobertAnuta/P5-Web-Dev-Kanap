@@ -64,44 +64,58 @@ const quantityInput = document.getElementById("cart__items");
 
 // console.log(quantityInput);
 
-//  Add an event listener that will
+//  Add an event listener that will look for input elements
 document.addEventListener("input", (event) => {
   event.preventDefault;
+
+  // import data from local store
   let readCartLs = JSON.parse(localStorage.getItem("addToCart"));
   let item = readCartLs.find((el) => el.key === event.target.parentNode.parentNode.parentNode.parentNode.getAttribute("data-id"));
   console.log(item);
+
+  // replace the item quantity with the inputed value
   item.quantity = event.target.value;
   console.log(item.quantity);
-
+  //  store the new value into local storage
   localStorage.setItem("addToCart", JSON.stringify(readCartLs));
 
+  // After task was finished update the grand total
   autoUpdatePage();
 });
 
-
+// function to update the Total Quantity of the cart and the total price
 let autoUpdatePage = () => {
+  // import the data from local storage
   let readCartLs = JSON.parse(localStorage.getItem("addToCart"));
 
-  const individualQuantity = readCartLs.reduce((x, y) => {
-    const cartQuantity = (Number(x.quantity) + Number(y.quantity));
-    return cartQuantity;
-  });
+  const itemQuantity = document.getElementById("itemQuantity");
+  console.log(itemQuantity.value);
 
-  // console.log(individualQuantity);
+  // if we have only one product add the input value
+  if (readCartLs.length <= 1) {
+    const totalQuantity = document.getElementById("totalQuantity");
+    let individualQuantity = itemQuantity.value;
+    totalQuantity.innerHTML = individualQuantity;
 
-  const totalQuantity = document.getElementById("totalQuantity");
+  } else {
+    // for more products calculate the total quantity
+    const individualQuantity = readCartLs.reduce((x, y) => {
+      const cartQuantity = (Number(x.quantity) + Number(y.quantity));
+      return cartQuantity;
+    });
+    totalQuantity.innerHTML = individualQuantity;
+  };
 
-  totalQuantity.innerHTML = individualQuantity;
+  // import the total quantity
 
-  // console.log(event.target.value);
 
+  // calculate the total individual price of the products
   const indivitualPrice = readCartLs.reduce((totalPrice, el) => {
     const subTotal = el.quantity * el.price;
     const totalCartPrice = subTotal + totalPrice;
     return totalCartPrice;
   }, 0);
 
-  console.log(indivitualPrice);
 
   // get ref for price
   const priceInput = document.getElementById("totalPrice");
@@ -109,43 +123,60 @@ let autoUpdatePage = () => {
   // Convert the number and add a thousands separator
   const formatTotalPrice = indivitualPrice.toLocaleString('en-GB');
 
+  // add the total price 
   priceInput.innerHTML = formatTotalPrice;
 
 };
 
 autoUpdatePage();
 
-const deleteItem = document.getElementById("deleteItem");
 
 
 
-deleteItem.addEventListener("click", (event) => {
-  let readCartLs = JSON.parse(localStorage.getItem("addToCart"));
-  let item = readCartLs.find((el) => el.key === event.target.parentNode.parentNode.parentNode.parentNode.getAttribute("data-id"));
-  console.log(item);
-});
+
+function deleteButton() {
+  const deleteItem = document.querySelectorAll("#deleteItem");
+
+  deleteItem.forEach((deleteItem) => {
+
+    deleteItem.addEventListener("click", (event) => {
+      let readCartLs = JSON.parse(localStorage.getItem("addToCart"));
+      let item = readCartLs.find((el) => el.key === deleteItem.parentElement.parentElement.parentElement.parentElement.getAttribute("data-id"));
+      console.log(item);
+
+      readCartLs.splice(item, 1);
+      localStorage.setItem('addToCart', JSON.stringify(readCartLs));
+      document.location.reload();
+    });
+  });
+};
+deleteButton();
 
 
-// let updateCart = () => {
-//   for (const el of selectedCartProduct) {
-//     // for each el calculate the individual price
-//     const totalPriceCalculator = selectedCartProduct.reduce((totalPrice, el) => {
-//       const subTotal = el.quantity * el.price;
-//       return totalPrice + subTotal;
+// get referance for First name input
+const firstName = document.getElementById("firstName");
 
-//     }, 0);
+// get referance for last name input
+const lastName = document.getElementById("lastName");
 
-//     console.log(totalPriceCalculator);
-//
-//     // get ref for quantity
-//     const quantityInput = document.getElementById("itemQuantity");
+// get referance for address
+const address = document.getElementById("address");
 
-//     // Convert the number and add a thousands separator
-//     const formatTotalPrice = totalPriceCalculator.toLocaleString('en-GB');
+// get referance for City
+const city = documet.getElementById("city");
 
-//     totalPrice.innerHTML = formatTotalPrice;
+// get referance for Email
+const email = documet.getElementById("email");
 
-//   };
 
-// };
-// updateCart();
+
+
+
+// deleteItem.addEventListener("click", (event) => {
+//   let readCartLs = JSON.parse(localStorage.getItem("addToCart"));
+//   let item = readCartLs.findIndex((el) => el.key === deleteItem.parentElement.parentElement.parentElement.parentElement.getAttribute("data-id"));
+//   console.log(item);
+// });
+// const deleteItem = document.getElementById("deleteItem");
+
+// deleteItem.addEventListener("click", deleteButton());
