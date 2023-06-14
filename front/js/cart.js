@@ -229,15 +229,64 @@ form.addEventListener("change", (event) => {
 
 });
 
+// Array with Form inputs
+const submitedForm = [];
+
+
 // event listener to form submit and prevent default
 form.addEventListener("submit", (event) => {
   event.preventDefault();
 
+  const firstNameValue = firstName.value.trim();
+  const lastNameValue = lastName.value.trim();
+  const addressValue = address.value.trim();
+  const cityValue = city.value.trim();
+  const emailValue = email.value.trim();
 
-  console.log(event.target);
+  // if the cart is empty disable the order button
+  if (selectedCartProduct === undefined) {
+    const orderButton = document.getElementById("order").setAttribute("disable", "true");
+
+  } else {
+    const orderButton = document.getElementById("order").removeAttribute("disable");
+
+    const submitedForm = {
+      firstName: firstName,
+      lastName: lastName,
+      address: address,
+      city: city,
+      email: email,
+    };
+  };
+  console.log(submitedForm);
 });
 
 
+// function submitedFormHandler() {
+
+//   const firstNameValue = firstName.value.trim();
+//   const lastNameValue = lastName.value.trim();
+//   const addressValue = address.value.trim();
+//   const cityValue = city.value.trim();
+//   const emailValue = email.value.trim();
+
+//   // if the cart is empty disable the order button
+//   if (selectedCartProduct === undefined) {
+//     const orderButton = document.getElementById("order").setAttribute("disable", "true");
+
+//   } else {
+//     const orderButton = document.getElementById("order").removeAttribute("disable");
+
+//     submitedForm.push({
+//       firstName: firstName.value,
+//       lastName: lastName,
+//       address: address,
+//       city: city,
+//       email: email,
+//     });
+//   };
+
+// };
 
 
 
@@ -277,4 +326,3 @@ form.addEventListener("submit", (event) => {
   // };
 
 // Email did not match format - test@example.com
-
