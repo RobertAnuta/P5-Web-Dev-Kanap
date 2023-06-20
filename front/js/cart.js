@@ -27,7 +27,7 @@ selectedCartProduct.map(el => {
 
   // For every product insert HTML element with variable data based on local store data
   product.innerHTML = `<div class="cart__item__img">
-                <img src="../../back/images/${el.imageUrl}" alt="Photo of ${el.name}">
+                <img src="${el.imageUrl}" alt="Photo of ${el.name}">
               </div>
               <div class="cart__item__content">
                 <div class="cart__item__content__description">
@@ -65,13 +65,13 @@ const quantityInput = document.getElementById("cart__items");
 // console.log(quantityInput);
 
 //  Add an event listener that will look for input elements
-document.addEventListener("input", (event) => {
+quantityInput.addEventListener("input", (event) => {
   event.preventDefault;
 
   // import data from local store
   let readCartLs = JSON.parse(localStorage.getItem("addToCart"));
   let item = readCartLs.find((el) => el.key === event.target.parentNode.parentNode.parentNode.parentNode.getAttribute("data-id"));
-  console.log(item);
+  // console.log(item);
 
   // replace the item quantity with the inputed value
   item.quantity = event.target.value;
@@ -89,12 +89,23 @@ let autoUpdatePage = () => {
   let readCartLs = JSON.parse(localStorage.getItem("addToCart"));
 
   const itemQuantity = document.getElementById("itemQuantity");
-  console.log(itemQuantity.value);
+  let individualQuantity = 0;
+
+  // if the cart is empty then show the value 0
+  if (itemQuantity === null || itemQuantity === "" || itemQuantity === undefined) {
+    individualQuantity = 0;
+  } else {
+    individualQuantity = itemQuantity.value;
+  };
+  // let individualQuantity = itemQuantity.value;
+  // console.log(individualQuantity);
+
+
 
   // if we have only one product add the input value
   if (readCartLs.length <= 1) {
     const totalQuantity = document.getElementById("totalQuantity");
-    let individualQuantity = itemQuantity.value;
+    // let individualQuantity = itemQuantity.value;
     totalQuantity.innerHTML = individualQuantity;
 
   } else {
@@ -131,9 +142,6 @@ let autoUpdatePage = () => {
 autoUpdatePage();
 
 
-
-
-
 function deleteButton() {
   const deleteItem = document.querySelectorAll("#deleteItem");
 
@@ -153,30 +161,121 @@ function deleteButton() {
 deleteButton();
 
 
+// // FORM // // 
+
+// get referance for form
+const form = document.getElementById("form");
 // get referance for First name input
 const firstName = document.getElementById("firstName");
-
+const firstNameErrorMsg = document.getElementById("firstNameErrorMsg");
 // get referance for last name input
 const lastName = document.getElementById("lastName");
-
+const lastNameErrorMsg = document.getElementById("firstNameErrorMsg");
 // get referance for address
 const address = document.getElementById("address");
-
+const addressErrorMsg = document.getElementById("firstNameErrorMsg");
 // get referance for City
-const city = documet.getElementById("city");
-
+const city = document.getElementById("city");
+const cityErrorMsg = document.getElementById("firstNameErrorMsg");
 // get referance for Email
-const email = documet.getElementById("email");
+const email = document.getElementById("email");
+const emailErrorMsg = document.getElementById("firstNameErrorMsg");
 
 
+const setError = (input, message) => {
+  const inputControl = input.parentElement;
+  const errorDisplay = inputControl.querySelector("p");
+  errorDisplay.innerText = message;
+  errorDisplay.style.display = "inline";
+  input.style.border = "2px solid red"
+  return false;
+};
+
+const unsetError = (input) => {
+  const inputControl = input.parentElement;
+  const errorDisplay = inputControl.querySelector("p");
+  errorDisplay.style.display = "none";
+  input.style.border = "none";
+  return true;
+};
+
+// event listener to watch changes in the form
+form.addEventListener("change", (event) => {
+  event.preventDefault();
+  // console.log(event.target);
+
+  // remove white spaces from input
+  const firstNameValue = firstName.value.trim();
+  const lastNameValue = lastName.value.trim();
+  const cityValue = city.value.trim();
+  const emailValue = email.value.trim();
 
 
+  // condition format for First name if input value have numbers show error message
+  if (/\d/.test(firstNameValue)) {
+    setError(firstName, "Please enter a valid First name without a number!");
+  } else {
+    unsetError(firstName);
+  };
+  // condition format for Last Name if input value have numbers show error message
+  if (/\d/.test(lastNameValue)) {
+    setError(lastName, "Please enter a valid Last name without a number!");
+  } else {
+    unsetError(lastName);
+  };
+  // condition format for City input if input value have numbers show error message
+  if (/\d/.test(cityValue)) {
+    setError(city, "Please enter a valid City name without a number!");
+  } else {
+    unsetError(city);
+  };
 
-// deleteItem.addEventListener("click", (event) => {
-//   let readCartLs = JSON.parse(localStorage.getItem("addToCart"));
-//   let item = readCartLs.findIndex((el) => el.key === deleteItem.parentElement.parentElement.parentElement.parentElement.getAttribute("data-id"));
-//   console.log(item);
-// });
-// const deleteItem = document.getElementById("deleteItem");
+  // condition format for email input if input value does't have an email format
+  let regex = new RegExp("([!#-'*+/-9=?A-Z^-~-]+(\.[!#-'*+/-9=?A-Z^-~-]+)*|\"\(\[\]!#-[^-~ \t]|(\\[\t -~]))+\")@([!#-'*+/-9=?A-Z^-~-]+(\.[!#-'*+/-9=?A-Z^-~-]+)*|\[[\t -Z^-~]*])");
 
-// deleteItem.addEventListener("click", deleteButton());
+  if (!regex.test(emailValue)) {
+    setError(email, "Email did not match format - test@example.com");
+  } else {
+    unsetError(email);
+  };
+
+
+});
+
+// Array with Form inputs
+const submitedForm = [];
+
+
+// event listener to form submit and prevent default
+form.addEventListener("submit", (event) => {
+  event.preventDefault();
+
+  const firstNameValue = firstName.value.trim();
+  const lastNameValue = lastName.value.trim();
+  const addressValue = address.value.trim();
+  const cityValue = city.value.trim();
+  const emailValue = email.value.trim();
+
+  // if the cart is empty disable the order button
+  if (itemQuantity === null) {
+    const orderButton = document.getElementById("order").setAttribute("disable", "true");
+
+    // else send the form inputs and create a new object
+  } else {
+    const orderButton = document.getElementById("order").removeAttribute("disable");
+
+    const submitedForm = {
+      firstName: firstNameValue,
+      lastName: lastNameValue,
+      address: addressValue,
+      city: cityValue,
+      email: emailValue,
+    };
+    console.log(submitedForm);
+    // The form input object created, add it into the local store AddToCart Array as first element
+    selectedCartProduct.unshift(submitedForm);
+
+    localStorage.setItem("addToCart", JSON.stringify(selectedCartProduct));
+  };
+});
+
