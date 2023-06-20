@@ -255,14 +255,15 @@ form.addEventListener("submit", (event) => {
   const addressValue = address.value.trim();
   const cityValue = city.value.trim();
   const emailValue = email.value.trim();
+  const orderButton = document.getElementById("order");
 
   // if the cart is empty disable the order button
   if (itemQuantity === null) {
-    const orderButton = document.getElementById("order").setAttribute("disable", "true");
+    orderButton.setAttribute("disable", "true");
 
     // else send the form inputs and create a new object
   } else {
-    const orderButton = document.getElementById("order").removeAttribute("disable");
+    orderButton.removeAttribute("disable");
 
     const submitedForm = {
       firstName: firstNameValue,
@@ -272,10 +273,15 @@ form.addEventListener("submit", (event) => {
       email: emailValue,
     };
     console.log(submitedForm);
-    // The form input object created, add it into the local store AddToCart Array as first element
-    selectedCartProduct.unshift(submitedForm);
 
-    localStorage.setItem("addToCart", JSON.stringify(selectedCartProduct));
+    // Create a new Array called OrderForm with the Form input values
+    localStorage.setItem("OrderForm", JSON.stringify(submitedForm));
+
+    // Add click event listener to the Submit Order button
+    // addToCartButton.addEventListener("click", () => {
+    //   handleAddToCart();
+    //   document.location.href = "http://127.0.0.1:5500/front/html/cart.html";
+    // });
   };
 });
 
