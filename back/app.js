@@ -19,5 +19,5 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 app.use('/api/products', productRoutes);
-products()
+
 module.exports = app;

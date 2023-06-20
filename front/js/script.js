@@ -1,8 +1,8 @@
-//Try code and catch errors 
+//Try code and catch errors
 try {
     //Fetch the products and convert in to a json format
     const products = async () => {
-        const response = await fetch('http://localhost:5500/back/models/Product.js');
+        const response = await fetch('http://localhost:3000/api/products');
         const parsedData = await response.json();
         console.log('parsedData', parsedData)
 
@@ -11,7 +11,7 @@ try {
             const product = document.createElement('a')
             product.innerHTML = `<a href='./product.html?id=${el._id}'>
                 <article id="${el._id}">
-                    <img src="../../back/images/${el.imageUrl}" alt="Lorem ipsum dolor sit amet, Kanap name1" />
+                    <img src="${el.imageUrl}" alt="Lorem ipsum dolor sit amet, Kanap name1" />
                     <h3 class="productName">${el.name}</h3>
                     <p class="productDescription">${el.description}</p>
                 </article>
