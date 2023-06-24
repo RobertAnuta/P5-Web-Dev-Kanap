@@ -103,29 +103,31 @@ let autoUpdatePage = () => {
   // console.log(readCartLs.length);
 
   // if we have only one product add the input value
-  // if (readCartLs.length <= 1 || readCartLs === undefined || readCartLs.length === undefined) {
-  //   const totalQuantity = document.getElementById("totalQuantity");
-  //   // let individualQuantity = itemQuantity.value;
-  //   totalQuantity.innerHTML = individualQuantity;
-
-  // }
-  if (readCartLs === null || readCartLs.length <= 1 || readCartLs === undefined || readCartLs.length === undefined) {
+  if (readCartLs === null || readCartLs === undefined || readCartLs.length === undefined) {
     const totalQuantity = document.getElementById("totalQuantity");
     let individualQuantity = 0; // Set a default value if readCartLs is null or undefined
     if (readCartLs && Array.isArray(readCartLs)) {
       individualQuantity = readCartLs.length;
     }
     totalQuantity.innerHTML = individualQuantity;
-  } else {
+
+    // handle quantity if you have only one product in the cart
+  } else if (readCartLs.length <= 1 || readCartLs === undefined || readCartLs.length === undefined) {
+    const totalQuantity = document.getElementById("totalQuantity");
+    // let individualQuantity = itemQuantity.value;
+    totalQuantity.innerHTML = individualQuantity;
+
     // for more products calculate the total quantity
+  } else {
+    const totalQuantity = document.getElementById("totalQuantity");
     individualQuantity = readCartLs.reduce((x, y) => {
       const cartQuantity = (Number(x.quantity) + Number(y.quantity));
       return cartQuantity;
     });
+
+    // import the total quantity
     totalQuantity.innerHTML = individualQuantity;
   };
-
-  // import the total quantity
 
 
   // calculate the total individual price of the products
@@ -134,8 +136,6 @@ let autoUpdatePage = () => {
     const totalCartPrice = subTotal + totalPrice;
     return totalCartPrice;
   }, 0);
-
-
   // get ref for price
   const priceInput = document.getElementById("totalPrice");
 
@@ -145,14 +145,17 @@ let autoUpdatePage = () => {
   // add the total price 
   priceInput.innerHTML = formatTotalPrice;
 
+
 };
 
+// run the function to update the correct quantity and price
 autoUpdatePage();
 
-
+// delete button that remove the product from local store
 function deleteButton() {
   const deleteItem = document.querySelectorAll("#deleteItem");
 
+  // find the correct item to delete from local storage
   deleteItem.forEach((deleteItem) => {
 
     deleteItem.addEventListener("click", (event) => {
@@ -189,7 +192,7 @@ const cityErrorMsg = document.getElementById("firstNameErrorMsg");
 const email = document.getElementById("email");
 const emailErrorMsg = document.getElementById("firstNameErrorMsg");
 
-
+// handle errors from form 
 const setError = (input, message) => {
   const inputControl = input.parentElement;
   const errorDisplay = inputControl.querySelector("p");
@@ -199,6 +202,7 @@ const setError = (input, message) => {
   return false;
 };
 
+// handle errors from form 
 const unsetError = (input) => {
   const inputControl = input.parentElement;
   const errorDisplay = inputControl.querySelector("p");
@@ -280,7 +284,7 @@ form.addEventListener("submit", (event) => {
       city: cityValue,
       email: emailValue,
     };
-    console.log(submitedForm);
+    // console.log(submitedForm);
 
     // Create a new Array called OrderForm with the Form input values
     localStorage.setItem("orderForm", JSON.stringify(submitedForm));
@@ -300,7 +304,9 @@ form.addEventListener("submit", (event) => {
 const orderButton = document.getElementById("order");
 
 
-form.addEventListener("submit", () => {
+form.addEventListener("submit", (event) => {
+  event.preventDefault();
+
   const apiUrl = "http://localhost:3000/api/products/order";
 
   const orderForm = JSON.parse(localStorage.getItem('orderForm'));
@@ -360,3 +366,12 @@ form.addEventListener("submit", () => {
 
 
 });
+
+
+// // Tests
+// if (readCartLs.length <= 1 || readCartLs === undefined || readCartLs.length === undefined) {
+  //   const totalQuantity = document.getElementById("totalQuantity");
+  //   // let individualQuantity = itemQuantity.value;
+  //   totalQuantity.innerHTML = individualQuantity;
+
+  // }
