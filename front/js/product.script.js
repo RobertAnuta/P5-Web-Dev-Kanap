@@ -80,6 +80,8 @@ function handleAddToCart() {
 
     // Save the updated addToCart array to local storage
     localStorage.setItem("addToCart", JSON.stringify(addToCart));
+    // Remove the local storage temporary created
+    localStorage.removeItem('selectedProduct');
 
 
 };

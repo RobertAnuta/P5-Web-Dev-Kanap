@@ -71,11 +71,12 @@ quantityInput.addEventListener("input", (event) => {
   // import data from local store
   let readCartLs = JSON.parse(localStorage.getItem("addToCart"));
   let item = readCartLs.find((el) => el.key === event.target.parentNode.parentNode.parentNode.parentNode.getAttribute("data-id"));
-  // console.log(item);
+  // let test = readCartLs.find((el) => el.key);
+  // console.log(test.id);
 
   // replace the item quantity with the inputed value
   item.quantity = event.target.value;
-  console.log(item.quantity);
+  // console.log(item.quantity);
   //  store the new value into local storage
   localStorage.setItem("addToCart", JSON.stringify(readCartLs));
 
@@ -97,20 +98,27 @@ let autoUpdatePage = () => {
   } else {
     individualQuantity = itemQuantity.value;
   };
-  // let individualQuantity = itemQuantity.value;
-  // console.log(individualQuantity);
 
 
+  // console.log(readCartLs.length);
 
   // if we have only one product add the input value
-  if (readCartLs.length <= 1) {
-    const totalQuantity = document.getElementById("totalQuantity");
-    // let individualQuantity = itemQuantity.value;
-    totalQuantity.innerHTML = individualQuantity;
+  // if (readCartLs.length <= 1 || readCartLs === undefined || readCartLs.length === undefined) {
+  //   const totalQuantity = document.getElementById("totalQuantity");
+  //   // let individualQuantity = itemQuantity.value;
+  //   totalQuantity.innerHTML = individualQuantity;
 
+  // }
+  if (readCartLs === null || readCartLs.length <= 1 || readCartLs === undefined || readCartLs.length === undefined) {
+    const totalQuantity = document.getElementById("totalQuantity");
+    let individualQuantity = 0; // Set a default value if readCartLs is null or undefined
+    if (readCartLs && Array.isArray(readCartLs)) {
+      individualQuantity = readCartLs.length;
+    }
+    totalQuantity.innerHTML = individualQuantity;
   } else {
     // for more products calculate the total quantity
-    const individualQuantity = readCartLs.reduce((x, y) => {
+    individualQuantity = readCartLs.reduce((x, y) => {
       const cartQuantity = (Number(x.quantity) + Number(y.quantity));
       return cartQuantity;
     });
@@ -275,7 +283,7 @@ form.addEventListener("submit", (event) => {
     console.log(submitedForm);
 
     // Create a new Array called OrderForm with the Form input values
-    localStorage.setItem("OrderForm", JSON.stringify(submitedForm));
+    localStorage.setItem("orderForm", JSON.stringify(submitedForm));
 
     // Add click event listener to the Submit Order button
     // addToCartButton.addEventListener("click", () => {
@@ -285,3 +293,70 @@ form.addEventListener("submit", (event) => {
   };
 });
 
+// TEST //
+// let testcart = JSON.parse(localStorage.getItem("orderForm"));
+
+// console.log(testcart["firstName"]);
+const orderButton = document.getElementById("order");
+
+
+form.addEventListener("submit", () => {
+  const apiUrl = "http://localhost:3000/api/products/order";
+
+  const orderForm = JSON.parse(localStorage.getItem('orderForm'));
+  const products = JSON.parse(localStorage.getItem('addToCart'));
+
+  // console.log(products.map(el => el.id));
+
+  fetch(apiUrl, {
+    method: "POST",
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      "contact": {
+        "firstName": String(orderForm["firstName"]),
+        "lastName": String(orderForm["lastName"]),
+        "address": String(orderForm["address"]),
+        "city": String(orderForm["city"]),
+        "email": String(orderForm["email"])
+      },
+      "products": products.map(el => el.id)
+    })
+  }).then(res => {
+    return res.json()
+  })
+
+    .then(data => {
+      const showOrder = document.getElementById("limitedWidthBlock");
+      showOrder.innerHTML = `<div>
+        <h1>Thank you for shopping at KANAP</h1>
+        <h3>Your Order number is: <span>${data.orderId}</span>
+        </h3>
+        </div>`;
+    })
+    // .then(data => console.log(data.orderId))
+
+
+    .then(data =>
+      form.addEventListener("submit", (event) => {
+        event.preventDefault();
+        const hideCart = document.getElementById("cartAndFormContainer");
+        hideCart.style.display = "none";
+        const showOrder = document.getElementById("limitedWidthBlock");
+        showOrder.innerHTML = `<div>
+        <h1>Thank you for shopping at KANAP</h1>
+        <h2>Your Order number is: ${data} </h3>
+        </div>`;
+
+      })
+    )
+
+
+    .catch(error => console.log("Error"))
+
+  localStorage.clear();
+
+
+
+});
