@@ -289,16 +289,9 @@ form.addEventListener("submit", (event) => {
     // Create a new Array called OrderForm with the Form input values
     localStorage.setItem("orderForm", JSON.stringify(submitedForm));
 
-    // Add click event listener to the Submit Order button
-    // addToCartButton.addEventListener("click", () => {
-    //   handleAddToCart();
-    //   document.location.href = "http://127.0.0.1:5500/front/html/cart.html";
-    // });
   };
 });
 
-// TEST //
-// let testcart = JSON.parse(localStorage.getItem("orderForm"));
 
 // console.log(testcart["firstName"]);
 const orderButton = document.getElementById("order");
@@ -362,16 +355,6 @@ form.addEventListener("submit", (event) => {
     .catch(error => console.log("Error"))
 
   localStorage.clear();
-
-
-
 });
 
 
-// // Tests
-// if (readCartLs.length <= 1 || readCartLs === undefined || readCartLs.length === undefined) {
-  //   const totalQuantity = document.getElementById("totalQuantity");
-  //   // let individualQuantity = itemQuantity.value;
-  //   totalQuantity.innerHTML = individualQuantity;
-
-  // }
