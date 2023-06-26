@@ -102,31 +102,35 @@ let autoUpdatePage = () => {
 
   // console.log(readCartLs.length);
 
+  const totalQuantity = document.getElementById("totalQuantity");
+
   // if we have only one product add the input value
   if (readCartLs === null || readCartLs === undefined || readCartLs.length === undefined) {
-    const totalQuantity = document.getElementById("totalQuantity");
     let individualQuantity = 0; // Set a default value if readCartLs is null or undefined
     if (readCartLs && Array.isArray(readCartLs)) {
       individualQuantity = readCartLs.length;
     }
     totalQuantity.innerHTML = individualQuantity;
-
+    console.log("Cart Empty");
     // handle quantity if you have only one product in the cart
-  } else if (readCartLs.length <= 1 || readCartLs === undefined || readCartLs.length === undefined) {
-    const totalQuantity = document.getElementById("totalQuantity");
+  } else if (readCartLs.length <= 1) {
     // let individualQuantity = itemQuantity.value;
     totalQuantity.innerHTML = individualQuantity;
 
+    console.log("Cart with 1 product");
+
     // for more products calculate the total quantity
   } else {
-    const totalQuantity = document.getElementById("totalQuantity");
-    individualQuantity = readCartLs.reduce((x, y) => {
-      const cartQuantity = (Number(x.quantity) + Number(y.quantity));
+    let cartProductsQuantity = readCartLs.map(item => item.quantity);
+    individualQuantity = cartProductsQuantity.reduce((x, y) => {
+      const cartQuantity = (Number(x) + Number(y));
       return cartQuantity;
     });
-
     // import the total quantity
     totalQuantity.innerHTML = individualQuantity;
+
+    // console.log(individualQuantity);
+    // console.log(readCartLs);
   };
 
 
