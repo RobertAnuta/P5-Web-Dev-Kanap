@@ -104,9 +104,10 @@ let autoUpdatePage = () => {
 
   const totalQuantity = document.getElementById("totalQuantity");
 
-  // if we have only one product add the input value
-  if (readCartLs === null || readCartLs === undefined || readCartLs.length === undefined) {
-    let individualQuantity = 0; // Set a default value if readCartLs is null or undefined
+  // if we have 0 products add the input value
+  if (!localStorage.getItem("addToCart") === null || readCartLs === undefined || readCartLs.length === undefined) {
+    // Set a default value if readCartLs is null or undefined
+    let individualQuantity = 0;
     if (readCartLs && Array.isArray(readCartLs)) {
       individualQuantity = readCartLs.length;
     }
@@ -116,8 +117,6 @@ let autoUpdatePage = () => {
   } else if (readCartLs.length <= 1) {
     // let individualQuantity = itemQuantity.value;
     totalQuantity.innerHTML = individualQuantity;
-
-    console.log("Cart with 1 product");
 
     // for more products calculate the total quantity
   } else {
@@ -129,8 +128,6 @@ let autoUpdatePage = () => {
     // import the total quantity
     totalQuantity.innerHTML = individualQuantity;
 
-    // console.log(individualQuantity);
-    // console.log(readCartLs);
   };
 
 
@@ -158,16 +155,17 @@ autoUpdatePage();
 // delete button that remove the product from local store
 function deleteButton() {
   const deleteItem = document.querySelectorAll("#deleteItem");
+  // console.log(deleteItem);
 
   // find the correct item to delete from local storage
   deleteItem.forEach((deleteItem) => {
 
     deleteItem.addEventListener("click", (event) => {
       let readCartLs = JSON.parse(localStorage.getItem("addToCart"));
-      let item = readCartLs.find((el) => el.key === deleteItem.parentElement.parentElement.parentElement.parentElement.getAttribute("data-id"));
-      console.log(item);
+      let itemIndex = readCartLs.findIndex((el) => el.key === deleteItem.parentElement.parentElement.parentElement.parentElement.getAttribute("data-id"));
+      console.log(itemIndex);
 
-      readCartLs.splice(item, 1);
+      readCartLs.splice(itemIndex, 1);
       localStorage.setItem('addToCart', JSON.stringify(readCartLs));
       document.location.reload();
     });
@@ -185,35 +183,17 @@ const firstName = document.getElementById("firstName");
 const firstNameErrorMsg = document.getElementById("firstNameErrorMsg");
 // get referance for last name input
 const lastName = document.getElementById("lastName");
-const lastNameErrorMsg = document.getElementById("firstNameErrorMsg");
+const lastNameErrorMsg = document.getElementById("lastNameErrorMsg");
 // get referance for address
 const address = document.getElementById("address");
-const addressErrorMsg = document.getElementById("firstNameErrorMsg");
+const addressErrorMsg = document.getElementById("addressErrorMsg");
 // get referance for City
 const city = document.getElementById("city");
-const cityErrorMsg = document.getElementById("firstNameErrorMsg");
+const cityErrorMsg = document.getElementById("cityErrorMsg");
 // get referance for Email
 const email = document.getElementById("email");
-const emailErrorMsg = document.getElementById("firstNameErrorMsg");
+const emailErrorMsg = document.getElementById("emailErrorMsg");
 
-// handle errors from form 
-const setError = (input, message) => {
-  const inputControl = input.parentElement;
-  const errorDisplay = inputControl.querySelector("p");
-  errorDisplay.innerText = message;
-  errorDisplay.style.display = "inline";
-  input.style.border = "2px solid red"
-  return false;
-};
-
-// handle errors from form 
-const unsetError = (input) => {
-  const inputControl = input.parentElement;
-  const errorDisplay = inputControl.querySelector("p");
-  errorDisplay.style.display = "none";
-  input.style.border = "none";
-  return true;
-};
 
 // event listener to watch changes in the form
 form.addEventListener("change", (event) => {
@@ -226,33 +206,53 @@ form.addEventListener("change", (event) => {
   const cityValue = city.value.trim();
   const emailValue = email.value.trim();
 
+  // expression to allow only letters and whitespace
+  function validateText(input) {
+    const regex = /^[A-Za-z\s]+$/;
+
+    return regex.test(input);
+  }
 
   // condition format for First name if input value have numbers show error message
-  if (/\d/.test(firstNameValue)) {
-    setError(firstName, "Please enter a valid First name without a number!");
+  if (validateText(firstNameValue)) {
+    firstNameErrorMsg.style.display = "none";
+    firstName.style.border = "none";
   } else {
-    unsetError(firstName);
+    firstNameErrorMsg.innerText = "Please enter a valid First name!";
+    firstNameErrorMsg.style.display = "inline";
+    firstName.style.border = "2px solid red"
   };
+
   // condition format for Last Name if input value have numbers show error message
-  if (/\d/.test(lastNameValue)) {
-    setError(lastName, "Please enter a valid Last name without a number!");
+  if (validateText(lastNameValue)) {
+    lastNameErrorMsg.style.display = "none";
+    lastName.style.border = "none";
   } else {
-    unsetError(lastName);
+    lastNameErrorMsg.innerText = "Please enter a valid Last name!";
+    lastNameErrorMsg.style.display = "inline";
+    lastName.style.border = "2px solid red"
   };
+
   // condition format for City input if input value have numbers show error message
-  if (/\d/.test(cityValue)) {
-    setError(city, "Please enter a valid City name without a number!");
+  if (validateText(cityValue)) {
+    cityErrorMsg.style.display = "none";
+    city.style.border = "none";
   } else {
-    unsetError(city);
+    cityErrorMsg.innerText = "Please enter a valid City name!";
+    cityErrorMsg.style.display = "inline";
+    city.style.border = "2px solid red"
   };
 
   // condition format for email input if input value does't have an email format
   let regex = new RegExp("([!#-'*+/-9=?A-Z^-~-]+(\.[!#-'*+/-9=?A-Z^-~-]+)*|\"\(\[\]!#-[^-~ \t]|(\\[\t -~]))+\")@([!#-'*+/-9=?A-Z^-~-]+(\.[!#-'*+/-9=?A-Z^-~-]+)*|\[[\t -Z^-~]*])");
 
   if (!regex.test(emailValue)) {
-    setError(email, "Email did not match format - test@example.com");
+    emailErrorMsg.innerText = "Email did not match format - test@example.com";
+    emailErrorMsg.style.display = "inline";
+    email.style.border = "2px solid red"
   } else {
-    unsetError(email);
+    emailErrorMsg.style.display = "none";
+    email.style.border = "none";
   };
 
 

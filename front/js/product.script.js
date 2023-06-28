@@ -46,6 +46,7 @@ fetch(apiUrl + productId, {
             const productPrice = document.getElementById('price').innerText;
             const productKey = `${productId}-${productColor}`;
 
+
             // Find all the objects from the cart that have the same key
             let existingProduct = addToCart.find((el) => el.key === productKey);
 
@@ -65,7 +66,8 @@ fetch(apiUrl + productId, {
                 });
                 // if the product have the same color change/add only the quantity
             } else if (existingProduct.color === productColor) {
-                existingProduct.quantity += productQuantity;
+                existingProduct.quantity += Number(productQuantity);
+                // console.log(existingProduct);
 
             } else {
                 // Product with the same ID and color doesn't exist, create a new object and push it to addToCart
@@ -87,8 +89,6 @@ fetch(apiUrl + productId, {
         // Add click event listener to the addToCart button
         addToCartButton.addEventListener("click", () => {
             handleAddToCart();
-            // Remove the local storage temporary created
-            localStorage.removeItem('selectedProduct');
 
             document.location.href = "http://127.0.0.1:5500/front/html/cart.html";
         });
