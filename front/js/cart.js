@@ -104,6 +104,8 @@ let autoUpdatePage = () => {
 
   const totalQuantity = document.getElementById("totalQuantity");
 
+  // if the cart is empty just return
+  if (readCartLs == null || readCartLs?.length === 0) return;
   // if we have 0 products add the input value
   if (!localStorage.getItem("addToCart") === null || readCartLs === undefined || readCartLs.length === undefined) {
     // Set a default value if readCartLs is null or undefined
@@ -127,7 +129,6 @@ let autoUpdatePage = () => {
     });
     // import the total quantity
     totalQuantity.innerHTML = individualQuantity;
-
   };
 
 
