@@ -331,6 +331,7 @@ form.addEventListener("submit", (event) => {
   const orderForm = JSON.parse(localStorage.getItem('orderForm'));
   const products = JSON.parse(localStorage.getItem('addToCart'));
 
+
   fetch(apiUrl, {
     method: "POST",
     headers: {
@@ -348,50 +349,11 @@ form.addEventListener("submit", (event) => {
     })
   }).then(res => res.json())
 
-
     .then(data => {
       const orderId = data.orderId;
-      orders.push(data.orderId);
+      const confirmationUrl = `http://127.0.0.1:5500/front/html/confirmation.html?orderId=${orderId}`;
+      window.location.href = confirmationUrl;
 
-      fetch('/api/orders', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ orderForm, products, orderId }),
-      })
-        .then(response => response.json())
-        .then(data => {
-          // Call the function to save the orderId
-          saveOrderId(data.orderId);
-        })
-        .catch(error => {
-          console.error(error);
-        });
-
-
-    })
-    .catch(error => console.log("Error"))
-
-  const saveOrderId = (orderId) => {
-    // Make a fetch request to save the orderId in the backend
-    fetch('/api/orders', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ orderId }),
-    })
-      .then(response => response.json())
-      .catch(error => {
-        console.error(error);
-      });
-  };
-
-
-  document.location.href = "http://127.0.0.1:5500/front/html/confirmation.html";
-
-  localStorage.clear();
+      localStorage.clear();
+    });
 });
-
-

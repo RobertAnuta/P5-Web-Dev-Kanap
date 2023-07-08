@@ -1,16 +1,6 @@
-// Fetch the orderId from the backend
-fetch('/api/getOrderId')
-    .then(response => response.json())
-    .then(data => {
-        const orderId = data.orderId;
 
-        // Get the orderId element
-        const orderIdElement = document.getElementById('orderId');
+const productId = document.getElementsByTagName("link")[0].baseURI.replace('http://127.0.0.1:5500/front/html/confirmation.html?orderId=', '');
+// Get the orderId element
+const orderIdElement = document.getElementById('orderId');
 
-        // Set the orderId as the text content of the element
-        orderIdElement.textContent = orderId;
-    })
-    .catch(error => {
-        console.error(error);
-    });
-
+orderIdElement.textContent = productId;

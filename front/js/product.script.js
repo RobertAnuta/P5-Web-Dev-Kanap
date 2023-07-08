@@ -3,7 +3,6 @@ const addToCartButton = document.getElementById("addToCart");
 
 const productId = document.getElementsByTagName("link")[0].baseURI.replace('http://127.0.0.1:5500/front/html/product.html?id=', '');
 const apiUrl = "http://localhost:3000/api/products/";
-// console.log(productId);
 
 fetch(apiUrl + productId, {
     method: "GET",
@@ -50,8 +49,6 @@ fetch(apiUrl + productId, {
             // Find all the objects from the cart that have the same key
             let existingProduct = addToCart.find((el) => el.key === productKey);
 
-            // console.log(existingProduct);
-
             // If the product is not defined into the cart create a new one
             if (existingProduct === undefined) {
                 // Product with the same ID and color exists, update the quantity
@@ -67,7 +64,6 @@ fetch(apiUrl + productId, {
                 // if the product have the same color change/add only the quantity
             } else if (existingProduct.color === productColor) {
                 existingProduct.quantity += Number(productQuantity);
-                // console.log(existingProduct);
 
             } else {
                 // Product with the same ID and color doesn't exist, create a new object and push it to addToCart
