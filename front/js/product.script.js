@@ -62,7 +62,7 @@ fetch(apiUrl + productId, {
                     quantity: productQuantity,
                     imageUrl: productImageUrl,
                     name: productName,
-                    price: productPrice,
+                    // price: productPrice,
                 });
                 // if the product have the same color change/add only the quantity
             } else if (existingProduct.color === productColor) {
@@ -78,7 +78,7 @@ fetch(apiUrl + productId, {
                     quantity: productQuantity,
                     imageUrl: productImageUrl,
                     name: productName,
-                    price: productPrice,
+                    // price: productPrice,
                 });
             };
 

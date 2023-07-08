@@ -1,39 +1,47 @@
 // Import local storage products
 let storedCartProduct = localStorage.getItem('addToCart');
 
-// Parse the stored product details as an object
-// let selectedCartProduct = JSON.parse(storedCartProduct);
+const apiUrl = "http://localhost:3000/api/products/";
 
 let tmp = JSON.parse(localStorage.getItem('addToCart'));
 
 let selectedCartProduct = tmp || [];
-// console.log(selectedCartProduct);
-
-// let cart = JSON.parse(localStorage.getItem('addToCart')) || [];
 
 //For every object create a HTML <a> with dynamically data
 selectedCartProduct.map(el => {
   // const products = document.createElement('a');
   const product = document.createElement('article')
+  let elementPrice;
 
-  // console.log(search.key);
-  // Add class name to the product HTML element article
-  product.classList.add("cart__item");
 
-  // Set product data-id 
-  product.setAttribute("data-id", `${el.key}`);
-  // Set product data-color
-  product.setAttribute("data-color", `${el.color}`);
+  fetch(apiUrl + el.id, {
+    method: "GET",
+    headers: {
+      'Content-Type': 'application/json'
+    },
+  }).then(res => {
+    return res.json()
+  }).then(data => {
 
-  // For every product insert HTML element with variable data based on local store data
-  product.innerHTML = `<div class="cart__item__img">
+    elementPrice = data.price;
+
+    // Add class name to the product HTML element article
+    product.classList.add("cart__item");
+
+    // Set product data-id 
+    product.setAttribute("data-id", `${el.key}`);
+    // Set product data-color
+    product.setAttribute("data-color", `${el.color}`);
+
+    // For every product insert HTML element with variable data based on local store data
+    product.innerHTML = `<div class="cart__item__img">
                 <img src="${el.imageUrl}" alt="Photo of ${el.name}">
               </div>
               <div class="cart__item__content">
                 <div class="cart__item__content__description">
                   <h2>${el.name}</h2>
                   <p>${el.color}</p>
-                  <p>€ ${el.price}</p>
+                  <p>€ <string id="price">${elementPrice}</string></p>
                 </div>
                 <div class="cart__item__content__settings">
                   <div class="cart__item__content__settings__quantity">
@@ -45,24 +53,22 @@ selectedCartProduct.map(el => {
             </div>
       </div>
     </div>`
-  document.getElementById('cart__items').appendChild(product);
-
+    document.getElementById('cart__items').appendChild(product);
+  })
+    .catch(error => {
+      console.log('Error:', error);
+    });
 });
-// console.log(selectedCartProduct);
-
 
 
 // A calculator for the total quantity of the items from my cart
 let quantityCalculator = () => {
   let totalQuantity = document.getElementById("totalQuantity");
   totalQuantity.innerHTML = selectedCartProduct.map((el) => el.quantity).reduce((x, y) => x + y, 0);
-  console.log(totalQuantity);
 };
-
 
 const quantityInput = document.getElementById("cart__items");
 
-// console.log(quantityInput);
 
 //  Add an event listener that will look for input elements
 quantityInput.addEventListener("input", (event) => {
@@ -72,13 +78,13 @@ quantityInput.addEventListener("input", (event) => {
   let readCartLs = JSON.parse(localStorage.getItem("addToCart"));
   let item = readCartLs.find((el) => el.key === event.target.parentNode.parentNode.parentNode.parentNode.getAttribute("data-id"));
   // let test = readCartLs.find((el) => el.key);
-  // console.log(test.id);
+
 
   // replace the item quantity with the inputed value
   item.quantity = event.target.value;
-  // console.log(item.quantity);
   //  store the new value into local storage
   localStorage.setItem("addToCart", JSON.stringify(readCartLs));
+
 
   // After task was finished update the grand total
   autoUpdatePage();
@@ -100,8 +106,6 @@ let autoUpdatePage = () => {
   };
 
 
-  // console.log(readCartLs.length);
-
   const totalQuantity = document.getElementById("totalQuantity");
 
   // if the cart is empty just return
@@ -114,7 +118,6 @@ let autoUpdatePage = () => {
       individualQuantity = readCartLs.length;
     }
     totalQuantity.innerHTML = individualQuantity;
-    console.log("Cart Empty");
     // handle quantity if you have only one product in the cart
   } else if (readCartLs.length <= 1) {
     // let individualQuantity = itemQuantity.value;
@@ -131,22 +134,46 @@ let autoUpdatePage = () => {
     totalQuantity.innerHTML = individualQuantity;
   };
 
+  // Function to calculate the total price
+  const calculateTotalPrice = () => {
+    // Get the products from the local storage
+    const products = JSON.parse(localStorage.getItem('addToCart'));
 
-  // calculate the total individual price of the products
-  const indivitualPrice = readCartLs.reduce((totalPrice, el) => {
-    const subTotal = el.quantity * el.price;
-    const totalCartPrice = subTotal + totalPrice;
-    return totalCartPrice;
-  }, 0);
-  // get ref for price
-  const priceInput = document.getElementById("totalPrice");
+    // Initialize the total price
+    let totalPrice = 0;
 
-  // Convert the number and add a thousands separator
-  const formatTotalPrice = indivitualPrice.toLocaleString('en-GB');
+    // Iterate over each product
+    products.forEach(product => {
+      // Fetch the price from the backend API
+      fetch(apiUrl + product.id, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+      })
+        .then(res => res.json())
+        .then(data => {
+          // Multiply the quantity with the price and add it to the total price
+          totalPrice += product.quantity * data.price;
 
-  // add the total price 
-  priceInput.innerHTML = formatTotalPrice;
+          const priceInput = document.getElementById("totalPrice");
 
+          // Convert the number and add a thousands separator
+          const formatTotalPrice = totalPrice.toLocaleString('en-GB');
+
+          // add the total price 
+          priceInput.innerHTML = formatTotalPrice;
+
+        })
+        .catch(error => {
+          console.log('Error:', error);
+        });
+    });
+
+  };
+
+  // Call the calculateTotalPrice function
+  calculateTotalPrice();
 
 };
 
@@ -156,7 +183,6 @@ autoUpdatePage();
 // delete button that remove the product from local store
 function deleteButton() {
   const deleteItem = document.querySelectorAll("#deleteItem");
-  // console.log(deleteItem);
 
   // find the correct item to delete from local storage
   deleteItem.forEach((deleteItem) => {
@@ -164,7 +190,6 @@ function deleteButton() {
     deleteItem.addEventListener("click", (event) => {
       let readCartLs = JSON.parse(localStorage.getItem("addToCart"));
       let itemIndex = readCartLs.findIndex((el) => el.key === deleteItem.parentElement.parentElement.parentElement.parentElement.getAttribute("data-id"));
-      console.log(itemIndex);
 
       readCartLs.splice(itemIndex, 1);
       localStorage.setItem('addToCart', JSON.stringify(readCartLs));
@@ -199,7 +224,6 @@ const emailErrorMsg = document.getElementById("emailErrorMsg");
 // event listener to watch changes in the form
 form.addEventListener("change", (event) => {
   event.preventDefault();
-  // console.log(event.target);
 
   // remove white spaces from input
   const firstNameValue = firstName.value.trim();
@@ -289,7 +313,6 @@ form.addEventListener("submit", (event) => {
       city: cityValue,
       email: emailValue,
     };
-    // console.log(submitedForm);
 
     // Create a new Array called OrderForm with the Form input values
     localStorage.setItem("orderForm", JSON.stringify(submitedForm));
@@ -297,8 +320,6 @@ form.addEventListener("submit", (event) => {
   };
 });
 
-
-// console.log(testcart["firstName"]);
 const orderButton = document.getElementById("order");
 
 
@@ -309,8 +330,6 @@ form.addEventListener("submit", (event) => {
 
   const orderForm = JSON.parse(localStorage.getItem('orderForm'));
   const products = JSON.parse(localStorage.getItem('addToCart'));
-
-  // console.log(products.map(el => el.id));
 
   fetch(apiUrl, {
     method: "POST",
@@ -327,37 +346,50 @@ form.addEventListener("submit", (event) => {
       },
       "products": products.map(el => el.id)
     })
-  }).then(res => {
-    return res.json()
-  })
+  }).then(res => res.json())
+
 
     .then(data => {
-      const showOrder = document.getElementById("limitedWidthBlock");
-      showOrder.innerHTML = `<div>
-        <h1>Thank you for shopping at KANAP</h1>
-        <h3>Your Order number is: <span>${data.orderId}</span>
-        </h3>
-        </div>`;
-    })
-    // .then(data => console.log(data.orderId))
+      const orderId = data.orderId;
+      orders.push(data.orderId);
 
-
-    .then(data =>
-      form.addEventListener("submit", (event) => {
-        event.preventDefault();
-        const hideCart = document.getElementById("cartAndFormContainer");
-        hideCart.style.display = "none";
-        const showOrder = document.getElementById("limitedWidthBlock");
-        showOrder.innerHTML = `<div>
-        <h1>Thank you for shopping at KANAP</h1>
-        <h2>Your Order number is: ${data} </h3>
-        </div>`;
-
+      fetch('/api/orders', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ orderForm, products, orderId }),
       })
-    )
+        .then(response => response.json())
+        .then(data => {
+          // Call the function to save the orderId
+          saveOrderId(data.orderId);
+        })
+        .catch(error => {
+          console.error(error);
+        });
 
 
+    })
     .catch(error => console.log("Error"))
+
+  const saveOrderId = (orderId) => {
+    // Make a fetch request to save the orderId in the backend
+    fetch('/api/orders', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ orderId }),
+    })
+      .then(response => response.json())
+      .catch(error => {
+        console.error(error);
+      });
+  };
+
+
+  document.location.href = "http://127.0.0.1:5500/front/html/confirmation.html";
 
   localStorage.clear();
 });
